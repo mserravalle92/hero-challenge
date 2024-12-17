@@ -1,0 +1,28 @@
+<div class="hero-form-container">
+    <h2>{{ isEditMode ? 'Editar Héroe' : 'Añadir Héroe' }}</h2>
+  
+    <form [formGroup]="heroForm" (ngSubmit)="onSubmit()">
+
+      <input type="hidden" formControlName="id" />
+      
+      <mat-form-field appearance="fill">
+        <mat-label>Nombre del Héroe</mat-label>
+        <input matInput formControlName="name" appUppercase required />
+        <mat-error *ngIf="heroForm.get('name')?.hasError('required')">El nombre es obligatorio</mat-error>
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Superpoder</mat-label>
+        <input matInput formControlName="superPower" required />
+        <mat-error *ngIf="heroForm.get('superPower')?.hasError('required')">El superpoder es obligatorio</mat-error>
+      </mat-form-field>
+  
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="heroForm.invalid">
+          {{ isEditMode ? 'Guardar Cambios' : 'Añadir Héroe' }}
+        </button>
+        <button mat-button color="warn" (click)="onCancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+  

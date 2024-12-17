@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { LoadingSpinnerComponent } from "./shared/components/loading-spinner/loading-spinner.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { HeroListComponent } from './features/hero-management/components/hero-list/hero-list.component';
 import { HeroFormComponent } from './features/hero-management/components/hero-form/hero-form.component';
 
-const routes = [
+const routes: Routes = [
   { path: '', redirectTo: 'heroes', pathMatch: 'full' },
   { path: 'heroes', component: HeroListComponent },
   { path: 'heroes/add', component: HeroFormComponent },
@@ -12,11 +11,8 @@ const routes = [
   { path: '**', redirectTo: 'heroes' },
 ];
 
-@Component({
-  selector: 'app-root',
-  imports: [RouterOutlet, LoadingSpinnerComponent],
-  templateUrl: './app.component.html',
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
 })
-export class AppComponent {
-  title = 'hero-challenge';
-}
+export class AppRoutingModule {}

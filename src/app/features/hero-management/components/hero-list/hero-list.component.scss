@@ -1,0 +1,30 @@
+.hero-list-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 50px;
+    padding: 50px;
+}
+
+mat-card {
+    padding: 20px;
+}
+
+mat-table {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filter-container {
+    display: flex;
+    justify-content: center;  
+    align-items: center;      
+    padding: 10px; 
+}
+
+mat-form-field {
+    width: 100%;  
+    max-width: 500px;
+}
+
+
+  
