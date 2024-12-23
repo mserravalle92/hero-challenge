@@ -1,6 +1,6 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { HttpClient, HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { LoadingService } from '../services/loading.service';
 import { CommonModule } from '@angular/common';
 import { loadingInterceptor } from '../interceptors/loading.interceptor';
