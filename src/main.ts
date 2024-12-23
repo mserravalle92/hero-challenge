@@ -4,7 +4,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { AppComponent } from './app/app.component';
 import { HeroListComponent } from './app/features/hero-management/components/hero-list/hero-list.component';
 import { HeroFormComponent } from './app/features/hero-management/components/hero-form/hero-form.component';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { loadingInterceptor } from 'app/core/interceptors/loading.interceptor';
 
 const routes: Route[] = [
   { path: '', redirectTo: 'heroes', pathMatch: 'full' },
@@ -17,7 +18,7 @@ const routes: Route[] = [
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideHttpClient(),
-    provideAnimations()
+    provideHttpClient(withInterceptors([loadingInterceptor])),
+    provideAnimations(),
   ]
 }).catch((err) => console.error(err));

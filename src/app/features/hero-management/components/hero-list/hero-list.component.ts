@@ -39,7 +39,12 @@ export class HeroListComponent implements AfterViewInit {
   pageSize = 5;    
   currentPage = 0;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator; 
+  @ViewChild(MatPaginator, {static: false})
+  set paginator(value: MatPaginator) {
+    if (this.heroesDataSource){
+      this.heroesDataSource.paginator = value;
+    }
+  }
   heroService: HeroRepository;
 
   constructor(@Inject(HERO_REPOSITORY) heroService: HeroRepository, private router: Router, private changeDetectorRef: ChangeDetectorRef) {
@@ -49,12 +54,13 @@ export class HeroListComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.heroesDataSource.paginator = this.paginator;
+    this.totalHeroes = this.heroService.getTotalHeroes();
+    this.changeDetectorRef.detectChanges();
     this.loadHeroes(); 
   }
 
   loadHeroes() {
     this.heroService.getHeroes().subscribe(heroes => {
-      this.totalHeroes = heroes.length;
       this.heroesDataSource.data = heroes.slice(this.currentPage * this.pageSize, (this.currentPage + 1) * this.pageSize);
       this.changeDetectorRef.detectChanges();
     });
@@ -63,12 +69,16 @@ export class HeroListComponent implements AfterViewInit {
   onPageChange(event: any) {
     this.pageSize = event.pageSize;
     this.currentPage = event.pageIndex;
+    this.totalHeroes = this.heroService.getTotalHeroes();
     this.loadHeroes();
   }
 
   searchHeroes() {
     if (this.searchText.trim() === '') {
-      this.loadHeroes();
+      this.totalHeroes = this.heroService.getTotalHeroes();
+      this.heroService.resetList().subscribe((_: void) => {
+        this.loadHeroes();
+      });
     } else {
       this.heroService.searchHeroesByName(this.searchText).subscribe(heroes => {
         this.totalHeroes = heroes.length;

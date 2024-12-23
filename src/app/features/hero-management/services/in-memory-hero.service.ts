@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 export class InMemoryHeroService implements HeroRepository {
   private heroesUrl = 'data/heroes.data.json'; 
   private heroesSubject = new BehaviorSubject<Hero[]>([]);
+  private heroes: Hero[] = [];
 
   constructor(private http: HttpClient) {
     this.loadInitialHeroes();
@@ -20,12 +21,14 @@ export class InMemoryHeroService implements HeroRepository {
     const storedHeroesJson: string | null = localStorage.getItem('heroes');
     if (storedHeroesJson) {
       const storedHeroes: Hero[] = JSON.parse(storedHeroesJson);
+      this.heroes = storedHeroes;
       this.heroesSubject.next(storedHeroes);
       return;  
     }
   
     this.http.get<Hero[]>(this.heroesUrl).subscribe({
       next: (heroes) => {
+        this.heroes = heroes;
         this.heroesSubject.next(heroes);
         localStorage.setItem('heroes', JSON.stringify(heroes));
       },
@@ -36,6 +39,10 @@ export class InMemoryHeroService implements HeroRepository {
   private saveHeroes(): void {
     const heroes = this.heroesSubject.getValue();
     localStorage.setItem('heroes', JSON.stringify(heroes));
+  }
+
+  getTotalHeroes(): number {
+    return this.heroes.length;
   }
   
 
@@ -52,10 +59,11 @@ export class InMemoryHeroService implements HeroRepository {
 
   searchHeroesByName(name: string): Observable<Hero[]> {
     const lowerName = name.toLowerCase();
-    const heroes = this.heroesSubject.getValue();
+    const heroes = this.heroes;
     const filteredHeroes = heroes.filter((hero) =>
       hero.name.toLowerCase().includes(lowerName)
     );
+    this.heroesSubject.next(filteredHeroes);
     return new BehaviorSubject<Hero[]>(filteredHeroes).asObservable();
   }
 
@@ -82,11 +90,17 @@ export class InMemoryHeroService implements HeroRepository {
     return new BehaviorSubject<void>(undefined).asObservable();
   }
 
+  resetList(): Observable<void> {
+    this.heroesSubject.next(this.heroes);
+    return new BehaviorSubject<void>(undefined).asObservable();
+  }
+
  
   deleteHero(id: number): Observable<void> {
     const heroes = this.heroesSubject.getValue();
-    const filteredHeroes = heroes.filter((hero) => hero.id !== id);
+    const filteredHeroes = this.heroes.filter((hero) => hero.id !== id);
     this.heroesSubject.next(filteredHeroes);
+    this.heroes = filteredHeroes;
     this.saveHeroes();
     return new BehaviorSubject<void>(undefined).asObservable();
   }
